@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.quiz-container{
+    background:#fff;
+    width:95%;
+    max-width:420px;
+    padding:25px;
+    border-radius:25px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25);
+    text-align:center;
+}
+
+.welcome-title{
+    font-size:2em;
+    font-weight:700;
+    color:#3f51b5;
+}
+
+.welcome-sub{
+    color:#666;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:2px solid #ddd;
+    font-size:1em;
+    margin-bottom:10px;
+}
+
+button{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    font-size:1em;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+#save-name-btn{
+    background:linear-gradient(90deg,#2196f3,#21cbf3);
+    color:white;
+}
+
+#clear-ranking-btn{
+    background:#e53935;
+    color:white;
+    margin-top:10px;
+}
+
+#restart-btn{
+    background:#ff9800;
+    color:white;
+    margin-top:15px;
+    display:none;
+}
+
+#player-list{
+    margin-top:15px;
+    max-height:150px;
+    overflow-y:auto;
+}
+
+.player-item{
+    padding:8px;
+    border-radius:10px;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+.player-item:nth-child(1){background:#ffd700;}
+.player-item:nth-child(2){background:#c0c0c0;}
+.player-item:nth-child(3){background:#cd7f32;}
+.player-item:nth-child(n+4){background:#e3f2fd;}
+
+.options-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.option-button{
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    color:white;
+}
+
+.correct{background:#4CAF50 !important;}
+.wrong{background:#e53935 !important;}
+</style>
+</head>
+
+<body>
+
+<div class="quiz-container">
+
+<div id="name-screen">
+    <div class="welcome-title">KUIS MATEMATIKA</div>
+    <div class="welcome-sub">Siap uji kemampuan kamu? 📘</div>
+
+    <input id="name-input" type="text" placeholder="Masukkan nama...">
+    <button id="save-name-btn">Mulai Kuis 🚀</button>
+
+    <h3>🏆 Ranking:</h3>
+    <div id="player-list"></div>
+    <button id="clear-ranking-btn">🗑 Hapus Semua Ranking</button>
+</div>
+
+<div id="quiz-screen" style="display:none;">
+    <div id="score-display"></div>
+    <div class="question" id="question"></div>
+
+    <div class="options-grid">
+        <button class="option-button" id="btn1"></button>
+        <button class="option-button" id="btn2"></button>
+        <button class="option-button" id="btn3"></button>
+        <button class="option-button" id="btn4"></button>
+    </div>
+
+    <div id="feedback"></div>
+    <button id="restart-btn">Main Lagi 🔄</button>
+</div>
+
+</div>
+
+<script>
+let currentPlayer="";
+let index=0, skor=0;
+
+const questions=[
+{q:"2x+5=17, x=?",options:["4","5","6","7"],answer:"6"},
+{q:"3²+4²=?",options:["25","49","12","7"],answer:"25"},
+{q:"2³×2²=?",options:["8","16","32","64"],answer:"32"},
+{q:"Jumlah sudut segitiga?",options:["90°","180°","270°","360°"],answer:"180°"}
+];
+
+function loadRanking(){
+let players=JSON.parse(localStorage.getItem("players"))||[];
+let list=document.getElementById("player-list");
+list.innerHTML="";
+
+players.sort((a,b)=>b.score-a.score);
+
+players.forEach((p,index)=>{
+let d=document.createElement("div");
+d.className="player-item";
+d.innerHTML=`
+${p.name} | Skor: ${p.score}
+<span style="float:right;color:red;cursor:pointer;" onclick="deletePlayer(${index})">❌</span>
+`;
+list.appendChild(d);
+});
+}
+
+function deletePlayer(index){
+let players=JSON.parse(localStorage.getItem("players"))||[];
+players.splice(index,1);
+localStorage.setItem…
